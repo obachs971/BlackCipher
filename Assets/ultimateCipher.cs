@@ -157,7 +157,7 @@ public class ultimateCipher : MonoBehaviour {
     static int moduleIdCounter = 1;
     int moduleId;
     private bool moduleSolved;
-
+    //Entering this comment so I can change the build
     public KMSelectable leftArrow;
     public KMSelectable rightArrow;
     public KMSelectable submit;
@@ -390,8 +390,8 @@ public class ultimateCipher : MonoBehaviour {
         while(kw1.Equals(kw2))
             kw2 = matrixWordList[UnityEngine.Random.Range(0, matrixWordList.Length)];
         string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        string key1 = getKey(kw1.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().First()) % 2 == 1);
-        string key2 = getKey(kw2.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().Last()) % 2 == 0);
+        string key1 = getKey(kw1.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().First()) % 2 == 0);
+        string key2 = getKey(kw2.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().Last()) % 2 == 1);
         Debug.LogFormat("[Black Cipher #{0}] Key A: {1}", moduleId, key1);
         Debug.LogFormat("[Black Cipher #{0}] Key B: {1}", moduleId, key2);
         key1 = key1 + "#";
@@ -488,15 +488,16 @@ public class ultimateCipher : MonoBehaviour {
         screenTexts[0].text = pages[page][0];
         screenTexts[1].text = pages[page][1];
         screenTexts[2].text = pages[page][2];
-        screenTexts[1].fontSize = 40;
         if(page == 0)
         {
             screenTexts[0].fontSize = 40;
-            screenTexts[2].fontSize = 40;
+            screenTexts[1].fontSize = 35;
+            screenTexts[2].fontSize = 35;
         }
         else
         {
             screenTexts[0].fontSize = 35;
+            screenTexts[1].fontSize = 40;
             screenTexts[2].fontSize = 25;
         }
             
@@ -543,6 +544,7 @@ public class ultimateCipher : MonoBehaviour {
                 screenTexts[0].text = "";
                 screenTexts[1].text = "";
                 screenTexts[2].text = pressed.GetComponentInChildren<TextMesh>().text;
+                screenTexts[2].fontSize = 40;
                 submitScreen = true;
             }
         }
