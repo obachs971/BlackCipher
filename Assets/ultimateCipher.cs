@@ -408,68 +408,66 @@ public class ultimateCipher : MonoBehaviour {
         wordList[length].Remove(kw2.ToUpper());
         pages[0][1] = kw1.ToUpper();
         pages[0][2] = kw2.ToUpper();
-        string key1 = getKey(kw1.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().First()) % 2 == 0);
-        string key2 = getKey(kw2.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().Last()) % 2 == 1);
-        char l1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"[UnityEngine.Random.Range(0, 27)];
-        char l2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#"[UnityEngine.Random.Range(0, 27)];
-        return DigrafidTry(word, key1, key2, l1, l2, "ABCDEFGHIJKLMNOPQRSTUVWXYZ#".Replace(l1 + "", ""), "ABCDEFGHIJKLMNOPQRSTUVWXYZ#".Replace(l2 + "", ""));
-    }
-    string DigrafidTry(string word, string k1, string k2, char l1, char l2, string alpha1, string alpha2)
-    {
-        string key1 = k1.ToUpper();
-        string key2 = k2.ToUpper();
-        if (l1 == '#')
-            key1 = key1 + "#";
-        else
-            key1 = key1.Replace(l1, '#') + "" + l1;
-        if (l2 == '#')
-            key2 = key2 + "#";
-        else
-            key2 = key2.Replace(l2, '#') + "" + l2;
-        string[] numbers = { "", "", "" };
-        string[] grid3x3 = { "123", "456", "789" };
+        string alpha1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#";
+        string alpha2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#";
+        string k1 = getKey(kw1.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().First()) % 2 == 0);
+        string k2 = getKey(kw2.ToUpper(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(Bomb.GetSerialNumberLetters().Last()) % 2 == 1);
+        char l1 = alpha1[UnityEngine.Random.Range(0, alpha1.Length)];
+        char l2 = alpha2[UnityEngine.Random.Range(0, alpha2.Length)];
+        alpha1 = alpha1.Replace(l1 + "", "");
+        alpha2 = alpha2.Replace(l2 + "", "");
+        bool flag;
+        string encrypt;
         List<string> logoutput = new List<string>();
-        for (int aa = 0; aa < 3; aa++)
+        do
         {
-            int num = key1.IndexOf(word[(aa * 2)]);
-            numbers[0] = numbers[0] + "" + ((num % 9) + 1);
-            int row = num / 9;
-            num = key2.IndexOf(word[(aa * 2) + 1]);
-            numbers[2] = numbers[2] + "" + ((num % 9) + 1);
-            int col = num / 9;
-            numbers[1] = numbers[1] + "" + grid3x3[row][col];
-            logoutput.Add(word[aa * 2] + "" + word[(aa * 2) + 1] + " -> " + numbers[0][aa] + "" + numbers[1][aa] + "" + numbers[2][aa]);
-        }
-        string encrypt = "";
-        for (int bb = 0; bb < 3; bb++)
-        {
-            encrypt = encrypt + "" + key1[((numbers[bb][0] - '0') - 1) + (((numbers[bb][1] - '0') - 1) / 3) * 9];
-            encrypt = encrypt + "" + key2[((numbers[bb][2] - '0') - 1) + (((numbers[bb][1] - '0') - 1) % 3) * 9];
-            logoutput.Add("Digrafid Row #" + (bb + 1) + ": " + numbers[bb] + " -> " + encrypt[bb * 2] + "" + encrypt[(bb * 2) + 1]);    
-        }
-        if (encrypt.Contains('#'))
-        {
-            if(alpha1.Length == 0)
+            flag = false;
+            string key1 = k1.Replace(l1, '#') + "" + l1;
+            string key2 = k2.Replace(l2, '#') + "" + l2;
+            string[] numbers = { "", "", "" };
+            string[] grid3x3 = { "123", "456", "789" };
+            encrypt = "";
+            for (int aa = 0; aa < 3; aa++)
             {
-                alpha1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#";
-                l2 = alpha2[UnityEngine.Random.Range(0, alpha2.Length)];
-                alpha2.Replace(l2 + "", "");
+                int num = key1.IndexOf(word[(aa * 2)]);
+                numbers[0] = numbers[0] + "" + ((num % 9) + 1);
+                int row = num / 9;
+                num = key2.IndexOf(word[(aa * 2) + 1]);
+                numbers[2] = numbers[2] + "" + ((num % 9) + 1);
+                int col = num / 9;
+                numbers[1] = numbers[1] + "" + grid3x3[row][col];
+                logoutput.Add(word[aa * 2] + "" + word[(aa * 2) + 1] + " -> " + numbers[0][aa] + "" + numbers[1][aa] + "" + numbers[2][aa]);
             }
-            l1 = alpha1[UnityEngine.Random.Range(0, alpha1.Length)];
-            alpha1.Replace(l1 + "", "");
-            return DigrafidTry(word.ToUpper(), k1, k2, l1, l2, alpha1, alpha2);
-        }
-        else
-        {
-            Debug.LogFormat("[Black Cipher #{0}] Key A: {1}", moduleId, key1);
-            Debug.LogFormat("[Black Cipher #{0}] Key B: {1}", moduleId, key2);
-            for (int aa = 0; aa < logoutput.Count; aa++)
-                Debug.LogFormat("[Black Cipher #{0}] {1}", moduleId, logoutput[aa]);
-            arrowTexts[0].text = l1 + "";
-            arrowTexts[1].text = l2 + "";
-            return encrypt;
-        }
-            
+            for (int bb = 0; bb < 3; bb++)
+            {
+                encrypt = encrypt + "" + key1[((numbers[bb][0] - '0') - 1) + (((numbers[bb][1] - '0') - 1) / 3) * 9];
+                encrypt = encrypt + "" + key2[((numbers[bb][2] - '0') - 1) + (((numbers[bb][1] - '0') - 1) % 3) * 9];
+                logoutput.Add("Digrafid Row #" + (bb + 1) + ": " + numbers[bb] + " -> " + encrypt[bb * 2] + "" + encrypt[(bb * 2) + 1]);
+            }
+            if (encrypt.Contains('#'))
+            {
+                if (alpha1.Length == 0)
+                {
+                    alpha1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ#";
+                    l2 = alpha2[UnityEngine.Random.Range(0, alpha2.Length)];
+                    alpha2.Replace(l2 + "", "");
+                }
+                l1 = alpha1[UnityEngine.Random.Range(0, alpha1.Length)];
+                alpha1.Replace(l1 + "", "");
+                logoutput.Clear();
+                flag = true;
+            }
+            else
+            {
+                Debug.LogFormat("[Black Cipher #{0}] Key A: {1}", moduleId, key1);
+                Debug.LogFormat("[Black Cipher #{0}] Key B: {1}", moduleId, key2);
+                for (int aa = 0; aa < logoutput.Count; aa++)
+                    Debug.LogFormat("[Black Cipher #{0}] {1}", moduleId, logoutput[aa]);
+                arrowTexts[0].text = l1 + "";
+                arrowTexts[1].text = l2 + "";
+            }
+        } while (flag);
+        return encrypt;
     }
     string getKey(string k, string alpha, bool start)
     {
